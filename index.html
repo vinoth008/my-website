@@ -1,0 +1,472 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Smart Traffic Management System</title>
+  <!-- Modern Font -->
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <!-- Font Awesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- Custom CSS -->
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="logo">
+        <i class="fa-solid fa-network-wired logo-icon"></i>
+        <span>Smart Traffic Management</span>
+      </div>
+      <nav class="nav-menu">
+        <a href="#" class="nav-item active" data-target="dashboard"><i class="fa-solid fa-chart-pie"></i> Dashboard</a>
+        <a href="#" class="nav-item" data-target="network"><i class="fa-solid fa-map-location-dot"></i> Network Map</a>
+        <a href="#" class="nav-item" data-target="signals"><i class="fa-solid fa-traffic-light"></i> Signal Control</a>
+        <a href="#" class="nav-item" data-target="cameras"><i class="fa-solid fa-video"></i> Camera Feeds</a>
+        <a href="#" class="nav-item" data-target="analytics"><i class="fa-solid fa-chart-line"></i> Analytics</a>
+        <a href="#" class="nav-item" data-target="incidents"><i class="fa-solid fa-triangle-exclamation"></i>
+          Incidents</a>
+      </nav>
+      <div class="sidebar-bottom">
+        <a href="#" class="nav-item" data-target="settings"><i class="fa-solid fa-gear"></i> Settings</a>
+        <div class="system-status">
+          <div class="status-indicator ping-active"></div>
+          <span>AI Engine Online</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- Header -->
+      <header class="topbar">
+        <div class="search-bar">
+          <i class="fa-solid fa-magnifying-glass"></i>
+          <input type="text" placeholder="Search intersection, camera, or zone...">
+        </div>
+        <div class="header-right">
+          <div class="time-display" id="live-time">00:00:00</div>
+          <button class="icon-btn"><i class="fa-regular fa-bell"></i><span class="badge">3</span></button>
+          <div class="user-profile" id="user-profile-btn">
+            <img src="https://i.pravatar.cc/150?img=11" alt="Admin" class="avatar">
+            <div class="user-info">
+              <span class="user-name">SysAdmin</span>
+              <span class="user-role">City Ops</span>
+            </div>
+            <!-- Dropdown -->
+            <div class="user-dropdown" id="user-dropdown">
+              <a href="#" class="dropdown-item"><i class="fa-solid fa-user"></i> My Profile</a>
+              <a href="#" class="dropdown-item" id="nav-settings-dropdown"><i class="fa-solid fa-gear"></i>
+                Preferences</a>
+              <div style="height: 1px; background: var(--card-border); margin: 4px 0;"></div>
+              <a href="#" class="dropdown-item" style="color: var(--neon-red);"><i
+                  class="fa-solid fa-arrow-right-from-bracket" style="color: var(--neon-red);"></i> Logout</a>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      <!-- 1. Dashboard View (Default) -->
+      <div id="dashboard" class="page-view active">
+        <div class="bento-grid">
+          <!-- Metrics Row -->
+          <div class="glass-card stat-card">
+            <div class="stat-icon cyan"><i class="fa-solid fa-car-side"></i></div>
+            <div class="stat-info">
+              <h3>Total Vehicles Live</h3>
+              <h2 id="vehicle-count">42,105</h2>
+              <span class="trend up"><i class="fa-solid fa-arrow-trend-up"></i> +12% vs avg</span>
+            </div>
+          </div>
+          <div class="glass-card stat-card">
+            <div class="stat-icon green"><i class="fa-solid fa-gauge-high"></i></div>
+            <div class="stat-info">
+              <h3>Average Flow Speed</h3>
+              <h2 id="avg-speed">48.5 km/h</h2>
+              <span class="trend up"><i class="fa-solid fa-arrow-trend-up"></i> Optimal</span>
+            </div>
+          </div>
+          <div class="glass-card stat-card">
+            <div class="stat-icon warning"><i class="fa-solid fa-triangle-exclamation"></i></div>
+            <div class="stat-info">
+              <h3>Active Incidents</h3>
+              <h2 id="incident-count">3</h2>
+              <span class="trend down"><i class="fa-solid fa-arrow-trend-down"></i> Resolving</span>
+            </div>
+          </div>
+          <div class="glass-card stat-card">
+            <div class="stat-icon purple"><i class="fa-solid fa-microchip"></i></div>
+            <div class="stat-info">
+              <h3>AI Optimization</h3>
+              <h2>98.2%</h2>
+              <span class="trend up"><i class="fa-solid fa-arrow-trend-up"></i> Learning</span>
+            </div>
+          </div>
+
+          <!-- Heatmap Section -->
+          <div class="glass-card map-card">
+            <div class="card-header">
+              <h2><i class="fa-solid fa-map-location-dot"></i> Live Traffic Heatmap</h2>
+              <div class="card-actions">
+                <button class="filter-btn active" data-filter="all">All</button>
+                <button class="filter-btn" data-filter="congestion">Congestion</button>
+                <button class="filter-btn" data-filter="accidents">Accidents</button>
+              </div>
+            </div>
+            <div class="map-wrapper">
+              <svg class="map-paths" width="100%" height="100%" preserveAspectRatio="none">
+                <path d="M 0,200 Q 250,250 400,100 T 800,200" class="neon-path cyan-path" />
+                <path d="M 150,0 L 250,500" class="neon-path purple-path" />
+                <path d="M 500,0 L 400,500" class="neon-path cyan-path" />
+                <path d="M 0,400 Q 300,300 800,450" class="neon-path purple-path" />
+              </svg>
+              <!-- Hotspots -->
+              <div class="hotspot hs-critical" data-type="accidents"
+                style="top: 25%; left: 50%; width: 120px; height: 120px;">
+                <div class="core"></div>
+                <span class="hs-label">Accident: I-95 N</span>
+              </div>
+              <div class="hotspot hs-warning" data-type="congestion"
+                style="top: 70%; left: 30%; width: 150px; height: 150px;">
+                <div class="core"></div>
+                <span class="hs-label">Heavy Load</span>
+              </div>
+              <div class="hotspot hs-optimal" data-type="all" style="top: 30%; left: 80%; width: 90px; height: 90px;">
+                <div class="core"></div>
+              </div>
+              <div class="hotspot hs-critical" data-type="congestion"
+                style="top: 80%; left: 75%; width: 100px; height: 100px;">
+                <div class="core"></div>
+                <span class="hs-label">Construction</span>
+              </div>
+              <div class="hotspot hs-warning" data-type="congestion"
+                style="top: 40%; left: 15%; width: 110px; height: 110px;">
+                <div class="core"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Right Side Stack -->
+          <div class="side-stack">
+            <!-- Signal Status Module -->
+            <div class="glass-card signals-card">
+              <div class="card-header">
+                <h2><i class="fa-solid fa-traffic-light"></i> Live Signal Status</h2>
+                <i class="fa-solid fa-ellipsis-vertical text-muted"></i>
+              </div>
+              <div class="signals-list">
+                <div class="intersection-row">
+                  <div class="intersection-info">
+                    <h4>Broadway & 7th Ave</h4>
+                    <span class="status-badge optimal">Flowing</span>
+                  </div>
+                  <div class="traffic-light">
+                    <div class="light red"></div>
+                    <div class="light yellow"></div>
+                    <div class="light green active"></div>
+                  </div>
+                </div>
+                <div class="intersection-row">
+                  <div class="intersection-info">
+                    <h4>Downtown High St</h4>
+                    <span class="status-badge critical">Congested</span>
+                  </div>
+                  <div class="traffic-light">
+                    <div class="light red active"></div>
+                    <div class="light yellow"></div>
+                    <div class="light green"></div>
+                  </div>
+                </div>
+                <div class="intersection-row">
+                  <div class="intersection-info">
+                    <h4>West End & 42nd</h4>
+                    <span class="status-badge warning">Slowing</span>
+                  </div>
+                  <div class="traffic-light">
+                    <div class="light red"></div>
+                    <div class="light yellow active"></div>
+                    <div class="light green"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Congestion Levels Module -->
+            <div class="glass-card congestion-card">
+              <div class="card-header">
+                <h2><i class="fa-solid fa-layer-group"></i> Zone Congestion</h2>
+              </div>
+              <div class="congestion-list">
+                <div class="congestion-item">
+                  <div class="cong-header">
+                    <span>Downtown Core</span>
+                    <span class="cong-percent val-critical">88%</span>
+                  </div>
+                  <div class="cong-bar-bg">
+                    <div class="cong-bar-fill fill-critical" style="width: 88%;"></div>
+                  </div>
+                </div>
+                <div class="congestion-item">
+                  <div class="cong-header">
+                    <span>North Sector</span>
+                    <span class="cong-percent val-warning">65%</span>
+                  </div>
+                  <div class="cong-bar-bg">
+                    <div class="cong-bar-fill fill-warning" style="width: 65%;"></div>
+                  </div>
+                </div>
+                <div class="congestion-item">
+                  <div class="cong-header">
+                    <span>East Industrial</span>
+                    <span class="cong-percent val-optimal">32%</span>
+                  </div>
+                  <div class="cong-bar-bg">
+                    <div class="cong-bar-fill fill-optimal" style="width: 32%;"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div> <!-- End Dashboard View -->
+
+      <!-- 2. Network Map View -->
+      <div id="network" class="page-view">
+        <div class="padding-wrapper">
+          <h2 class="page-title">City-Wide Network Map</h2>
+          <div class="glass-card map-card full-map" style="grid-column: span 12;">
+            <div class="map-wrapper" style="border-radius: 12px; height: 100%;">
+              <svg class="map-paths" width="100%" height="100%" preserveAspectRatio="none">
+                <path d="M 0,400 Q 250,500 600,200 T 1200,300" class="neon-path cyan-path" style="stroke-width: 5px;" />
+                <path d="M 300,0 L 400,800" class="neon-path purple-path" style="stroke-width: 4px;" />
+                <path d="M 800,0 L 700,800" class="neon-path cyan-path" style="stroke-width: 4px;" />
+                <path d="M 0,600 Q 500,400 1200,800" class="neon-path purple-path" style="stroke-width: 5px;" />
+              </svg>
+              <div class="hotspot hs-critical" data-type="accidents"
+                style="top: 40%; left: 50%; width: 250px; height: 250px;">
+                <div class="core"></div>
+                <span class="hs-label" style="font-size: 1rem; top: -35px;">Major Accident - Route 66</span>
+              </div>
+              <div class="hotspot hs-optimal" data-type="all" style="top: 20%; left: 80%; width: 150px; height: 150px;">
+                <div class="core"></div>
+              </div>
+              <div class="hotspot hs-warning" data-type="congestion"
+                style="top: 70%; left: 20%; width: 200px; height: 200px;">
+                <div class="core"></div>
+                <span class="hs-label" style="top: -30px;">Events Traffic</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 3. Signal Control View -->
+      <div id="signals" class="page-view">
+        <div class="padding-wrapper">
+          <h2 class="page-title">Signal Override Control</h2>
+          <div class="signals-grid">
+            <div class="glass-card override-card">
+              <h3>Sector 1: Downtown</h3>
+              <p class="text-muted status-text" style="margin-bottom: 15px; font-size: 0.85rem;">Status: AI Controlled
+                (Optimal)</p>
+              <div class="traffic-light override-light"
+                style="justify-content: center; gap: 15px; padding: 15px; width: fit-content; margin: 0 auto;">
+                <div class="light red" style="width:30px; height:30px;"></div>
+                <div class="light yellow" style="width:30px; height:30px;"></div>
+                <div class="light green active" style="width:30px; height:30px;"></div>
+              </div>
+              <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn-primary force-red-btn" style="flex: 1; padding: 8px;">Force Red</button>
+                <button class="btn-primary force-green-btn"
+                  style="flex: 1; padding: 8px; background: var(--neon-green);">Force
+                  Green</button>
+              </div>
+            </div>
+            <div class="glass-card override-card">
+              <h3>Sector 2: North End</h3>
+              <p class="text-muted status-text" style="margin-bottom: 15px; font-size: 0.85rem;">Status: Congested
+                Override</p>
+              <div class="traffic-light override-light"
+                style="justify-content: center; gap: 15px; padding: 15px; width: fit-content; margin: 0 auto;">
+                <div class="light red active" style="width:30px; height:30px;"></div>
+                <div class="light yellow" style="width:30px; height:30px;"></div>
+                <div class="light green" style="width:30px; height:30px;"></div>
+              </div>
+              <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn-primary force-red-btn" style="flex: 1; padding: 8px;">Force Red</button>
+                <button class="btn-primary force-green-btn"
+                  style="flex: 1; padding: 8px; background: var(--neon-green);">Force
+                  Green</button>
+              </div>
+            </div>
+            <div class="glass-card override-card">
+              <h3>Sector 3: Interstates</h3>
+              <p class="text-muted status-text" style="margin-bottom: 15px; font-size: 0.85rem;">Status: Yellow Flashing
+              </p>
+              <div class="traffic-light override-light"
+                style="justify-content: center; gap: 15px; padding: 15px; width: fit-content; margin: 0 auto;">
+                <div class="light red" style="width:30px; height:30px;"></div>
+                <div class="light yellow active" style="width:30px; height:30px; animation: blink 1s infinite;"></div>
+                <div class="light green" style="width:30px; height:30px;"></div>
+              </div>
+              <div style="display: flex; gap: 10px; margin-top: 20px;">
+                <button class="btn-primary force-red-btn" style="flex: 1; padding: 8px;">Force Red</button>
+                <button class="btn-primary force-green-btn"
+                  style="flex: 1; padding: 8px; background: var(--neon-green);">Force
+                  Green</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4. Camera Feeds View -->
+      <div id="cameras" class="page-view">
+        <div class="padding-wrapper">
+          <h2 class="page-title">Live Camera Feeds</h2>
+          <div class="cameras-grid">
+            <div class="camera-feed">
+              <span class="camera-overlay">CAM 01 - HIGHWAY 1</span>
+              <span class="camera-rec">REC</span>
+              <div style="color:var(--text-muted); font-size: 0.8rem;"><i class="fa-solid fa-spinner fa-spin"></i> Live
+                Feed Connected</div>
+            </div>
+            <div class="camera-feed">
+              <span class="camera-overlay">CAM 02 - DOWNTOWN INT.</span>
+              <span class="camera-rec">REC</span>
+              <div style="color:var(--text-muted); font-size: 0.8rem;"><i class="fa-solid fa-spinner fa-spin"></i> Live
+                Feed Connected</div>
+            </div>
+            <div class="camera-feed" style="background: rgba(255,0,0,0.1); border-color: rgba(255,0,0,0.3);">
+              <span class="camera-overlay" style="color: var(--neon-red);">CAM 03 - OFFLINE</span>
+              <div style="color:var(--neon-red); font-weight: 600;"><i class="fa-solid fa-triangle-exclamation"></i>
+                Signal Lost</div>
+            </div>
+            <div class="camera-feed">
+              <span class="camera-overlay">CAM 04 - EAST BRIDGE</span>
+              <span class="camera-rec">REC</span>
+              <div style="color:var(--text-muted); font-size: 0.8rem;"><i class="fa-solid fa-spinner fa-spin"></i> Live
+                Feed Connected</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 5. Analytics View -->
+      <div id="analytics" class="page-view">
+        <div class="padding-wrapper">
+          <h2 class="page-title">Traffic Analytics & Trends</h2>
+          <div class="glass-card"
+            style="height: 400px; padding: 20px; align-items: center; justify-content: center; margin-bottom: 24px;">
+            <canvas id="trafficVolumeChart" style="width: 100%; height: 100%;"></canvas>
+          </div>
+          <div class="analytics-grid">
+            <div class="glass-card">
+              <h3>Peak Commute Times</h3>
+              <ul
+                style="margin-top: 15px; list-style: none; display: flex; flex-direction: column; gap: 10px; color: var(--text-muted);">
+                <li><strong>Morning:</strong> 07:30 AM - 09:15 AM</li>
+                <li><strong>Evening:</strong> 04:45 PM - 06:30 PM</li>
+              </ul>
+            </div>
+            <div class="glass-card">
+              <h3>AI Efficiency Score</h3>
+              <h1 style="margin-top: 15px; color: var(--neon-green); font-size: 3rem;">+18%</h1>
+              <p class="text-muted">Improvement in traffic flow compared to standard fixed-time signals.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 6. Incidents View -->
+      <div id="incidents" class="page-view">
+        <div class="padding-wrapper">
+          <h2 class="page-title">Active Incidents Log</h2>
+          <div class="glass-card" style="padding: 0; overflow-x: auto;">
+            <table class="incidents-table">
+              <thead>
+                <tr>
+                  <th>ID</th>
+                  <th>Type</th>
+                  <th>Location</th>
+                  <th>Time Reported</th>
+                  <th>Status</th>
+                  <th>Severity</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>#4092</td>
+                  <td>Vehicle Collision</td>
+                  <td>I-95 North, Exit 42</td>
+                  <td>10:45 AM</td>
+                  <td style="color: var(--neon-yellow);">En Route</td>
+                  <td><span class="severity sev-high">High</span></td>
+                </tr>
+                <tr>
+                  <td>#4091</td>
+                  <td>Debris on Road</td>
+                  <td>Downtown High St</td>
+                  <td>10:15 AM</td>
+                  <td style="color: var(--neon-cyan);">Clearing</td>
+                  <td><span class="severity sev-medium">Medium</span></td>
+                </tr>
+                <tr>
+                  <td>#4090</td>
+                  <td>Stalled Vehicle</td>
+                  <td>West End Bridge</td>
+                  <td>09:30 AM</td>
+                  <td style="color: var(--text-muted);">Resolved</td>
+                  <td><span class="severity sev-low">Low</span></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- 7. Settings View -->
+      <div id="settings" class="page-view">
+        <div class="padding-wrapper">
+          <h2 class="page-title">System Settings</h2>
+          <div class="glass-card">
+            <form class="settings-form">
+              <div class="form-group">
+                <label>System Name</label>
+                <input type="text" value="Smart Traffic Management Core Main">
+              </div>
+              <div class="form-group">
+                <label>AI Aggression Level</label>
+                <select>
+                  <option>Low (Conservative Timing)</option>
+                  <option selected>Balanced (Standard Flow)</option>
+                  <option>High (Dynamic Priority)</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Notification Alerts</label>
+                <select>
+                  <option>All Incidents</option>
+                  <option>High Severity Only</option>
+                  <option>Muted</option>
+                </select>
+              </div>
+              <button type="button" class="btn-primary" id="save-settings-btn" style="width: fit-content;">Save
+                Configuration</button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+
+</html>
